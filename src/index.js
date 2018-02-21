@@ -75,10 +75,10 @@ class ExtractTextPlugin {
     }
   }
 
-  renderExtractedChunk(chunk) {
+  renderExtractedChunk(chunk, compilation) {
     const source = new ConcatSource();
     chunk.forEachModule((module) => {
-      const moduleSource = module.source();
+      const moduleSource = module.source(compilation.dependencyTemplates, compilation.runtimeTemplate);
       source.add(this.applyAdditionalInformation(moduleSource, module.additionalInformation));
     }, this);
     return source;
@@ -205,7 +205,7 @@ class ExtractTextPlugin {
               return getOrder(a, b);
             });
             const chunk = extractedChunk.originalChunk;
-            const source = this.renderExtractedChunk(extractedChunk);
+            const source = this.renderExtractedChunk(extractedChunk, compilation);
 
             const getPath = format => compilation.getPath(format, {
               chunk,
